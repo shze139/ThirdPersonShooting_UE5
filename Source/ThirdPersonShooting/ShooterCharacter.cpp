@@ -13,6 +13,9 @@
 #include "Particles\ParticleSystemComponent.h"
 #include "Item.h"
 #include "Components\WidgetComponent.h"
+#include "Weapon.h"
+#include "Components\BoxComponent.h"
+#include "Components\SphereComponent.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter() :
@@ -95,6 +98,8 @@ void AShooterCharacter::BeginPlay()
 		CameraDefaultFOV = GetFollowCamera()->FieldOfView;
 		CameraCurrentFOV = CameraDefaultFOV;
 	}
+	// Spawn the default weapon and equip it;
+	EquipWeapon(SpawnDefaultWeapon());
 }
 
 void AShooterCharacter::MoveForward(float Value)
@@ -451,6 +456,43 @@ void AShooterCharacter::TraceForItem()
 	{
 		// No longer overlapping any item, AItem last frame should not show widget
 		TraceHitItemLastFrame->GetPickupWidget()->SetVisibility(false);
+	}
+}
+
+AWeapon* AShooterCharacter::SpawnDefaultWeapon()
+{
+	// Check the TSubclassOf variable
+	if (DefaultWeaponClass)
+	{
+		// Spawn the default based on blueprint class
+		return GetWorld()->SpawnActor<AWeapon>(DefaultWeaponClass);
+	}
+	return nullptr;
+}
+
+void AShooterCharacter::EquipWeapon(AWeapon* WeaponToEquip)
+{
+	// Check WeaponToEquip
+	if (WeaponToEquip)
+	{
+		// Disable the tracing function for widget display
+		WeaponToEquip->GetAreaSphere()->SetCollisionResponseToAllChannels(
+			ECollisionResponse::ECR_Ignore);
+
+		// Ignore collision when equipped the weapon
+		WeaponToEquip->GetCollisionBox()->SetCollisionResponseToAllChannels(
+			ECollisionResponse::ECR_Ignore);
+
+		// Get the right hand socket from the mesh
+		const USkeletalMeshSocket* HandSocket =
+			GetMesh()->GetSocketByName(FName("RightHandSocket"));
+		// Attach the weapon to the right hand by RightHandSocket
+		if (HandSocket)
+		{
+			HandSocket->AttachActor(WeaponToEquip, GetMesh());
+		}
+		// Set currently EquippedWeapon to this default weapon
+		EquippedWeapon = WeaponToEquip;
 	}
 }
 

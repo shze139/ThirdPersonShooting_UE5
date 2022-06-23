@@ -78,11 +78,17 @@ protected:
 	UFUNCTION()
 	void AutoFireReset();
 
-	/** Line trace for items under the crosshair */
+	// Line trace for items under the crosshair
 	bool TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation);
 
-	/** Trace for items if OverlappedItemCount > 0 */
+	// Trace for items if OverlappedItemCount>0
 	void TraceForItem();
+
+	// Spawn a default weapon and equips it
+	class AWeapon* SpawnDefaultWeapon();
+
+	// Takes a weapon and attaches it to the mesh
+	void EquipWeapon(AWeapon* WeaponToEquip);
 
 public:	
 	// Called every frame
@@ -221,7 +227,15 @@ private:
 
 	/** The Aitem we hit last frame */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, meta = (AllowPrivateAccess = "true"))
-	class AItem* TraceHitItemLastFrame;;
+	class AItem* TraceHitItemLastFrame;
+
+	/** Currently equipped weapon */ 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	AWeapon* EquippedWeapon;
+
+	/** Set this in Blueprints for the default Weapon class */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AWeapon> DefaultWeaponClass;
 
 public:
 	/** return CameraBoom subobject */
