@@ -475,14 +475,6 @@ void AShooterCharacter::EquipWeapon(AWeapon* WeaponToEquip)
 	// Check WeaponToEquip
 	if (WeaponToEquip)
 	{
-		// Disable the tracing function for widget display
-		WeaponToEquip->GetAreaSphere()->SetCollisionResponseToAllChannels(
-			ECollisionResponse::ECR_Ignore);
-
-		// Ignore collision when equipped the weapon
-		WeaponToEquip->GetCollisionBox()->SetCollisionResponseToAllChannels(
-			ECollisionResponse::ECR_Ignore);
-
 		// Get the right hand socket from the mesh
 		const USkeletalMeshSocket* HandSocket =
 			GetMesh()->GetSocketByName(FName("RightHandSocket"));
@@ -493,6 +485,7 @@ void AShooterCharacter::EquipWeapon(AWeapon* WeaponToEquip)
 		}
 		// Set currently EquippedWeapon to this default weapon
 		EquippedWeapon = WeaponToEquip;
+		EquippedWeapon->SetItemState(EItemState::EIS_Equiped);
 	}
 }
 

@@ -17,6 +17,17 @@ enum class EItemRarity : uint8 {
 	EIR_MAX UMETA(DisplayName = "DefaultMAX")
 };
 
+UENUM(BlueprintType)
+enum class EItemState : uint8 {
+	EIS_PickUp UMETA(DisplayName = "PickUp"),
+	EIS_EquipInterping UMETA(DisplayName = "EquipInterping"),
+	EIS_Equiped UMETA(DisplayName = "Equiped "),
+	EIS_PickedUp UMETA(DisplayName = "PickedUp "),
+	EIS_Falling UMETA(DisplayName = "Falling "),
+
+	EIS_MAX UMETA(DisplayName = "DefaultMAX")
+};
+
 UCLASS()
 class THIRDPERSONSHOOTING_API AItem : public AActor
 {
@@ -51,6 +62,9 @@ protected:
 	// Sets the ActiveStars arry of bools based on rarity
 	void SetActiveStars();
 
+	// Sets properties of the item's components based on State
+	void SetItemProperties(EItemState State);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -81,11 +95,14 @@ private:
 	int32 ItemCount;
 
 	/** Item rarity which determines number of start in Pickup Widget */
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	EItemRarity ItemRarity;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
 	TArray<bool> ActiveStars;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item Properties", meta = (AllowPrivateAccess = "true"))
+	EItemState ItemState;
 
 public:
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const{ return PickupWidget; }
@@ -93,4 +110,8 @@ public:
 	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
 
 	FORCEINLINE UBoxComponent* GetCollisionBox() const{ return CollisionBox; }
+
+	FORCEINLINE EItemState GetItemState() const { return ItemState; }
+
+	void SetItemState(EItemState State);
 };
