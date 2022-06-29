@@ -90,6 +90,9 @@ protected:
 	// Takes a weapon and attaches it to the mesh
 	void EquipWeapon(AWeapon* WeaponToEquip);
 
+	// Drop current EquippedWeapon
+	void DropWeapon();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
