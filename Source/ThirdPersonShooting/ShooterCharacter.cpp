@@ -434,22 +434,22 @@ void AShooterCharacter::TraceForItem()
 		TraceUnderCrosshairs(ItemTraceResult, HitLocation);
 		if (ItemTraceResult.bBlockingHit)
 		{
-			AItem* HitItem = Cast<AItem>(ItemTraceResult.GetActor());
-			if (HitItem && HitItem->GetPickupWidget())
+			TraceHitItem = Cast<AItem>(ItemTraceResult.GetActor());
+			if (TraceHitItem && TraceHitItem->GetPickupWidget())
 			{
 				// Show item's pickup widget 
-				HitItem->GetPickupWidget()->SetVisibility(true);
+				TraceHitItem->GetPickupWidget()->SetVisibility(true);
 			}
 			// We hit an Aitem last frame
 			if (TraceHitItemLastFrame)
 			{
 				// We are hitting a differnt Aitem this frame from last frame...
 				// ...or Aitem is null
-				if (HitItem != TraceHitItemLastFrame) 
+				if (TraceHitItem != TraceHitItemLastFrame)
 					TraceHitItemLastFrame->GetPickupWidget()->SetVisibility(false);
 			}
 			// Store a reference to Hititem for next frame
-			TraceHitItemLastFrame = HitItem;
+			TraceHitItemLastFrame = TraceHitItem;
 		}
 	}
 	else if(TraceHitItemLastFrame)
@@ -496,8 +496,30 @@ void AShooterCharacter::DropWeapon()
 		FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
 		EquippedWeapon->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
 		EquippedWeapon->SetItemState(EItemState::EIS_Falling);
-		EquippedWeapon->GetItemMesh()->AddImpulse(GetActorForwardVector() * 10000);
+		EquippedWeapon->ThrowWeapon();
+		EquippedWeapon = nullptr;
 	}
+}
+
+void AShooterCharacter::SelectButtonPressed()
+{
+	if (TraceHitItem)
+	{
+		auto TraceHitWeapon = Cast<AWeapon>(TraceHitItem);
+		if(TraceHitWeapon) SwapWeapon(TraceHitWeapon);
+	}
+}
+
+void AShooterCharacter::SelectButtonReleased()
+{
+}
+
+void AShooterCharacter::SwapWeapon(AWeapon* WeaponToSwape)
+{
+	DropWeapon();
+	EquipWeapon(WeaponToSwape);
+	TraceHitItem = nullptr;
+	TraceHitItemLastFrame = nullptr;
 }
 
 // Called every frame
@@ -539,8 +561,8 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Aiming", IE_Pressed, this, &AShooterCharacter::AimingButtonPressed);
 	PlayerInputComponent->BindAction("Aiming", IE_Released, this, &AShooterCharacter::AimingButtonReleased);
 
-	PlayerInputComponent->BindAction("Drop", IE_Pressed, this, &AShooterCharacter::DropWeapon);
-	PlayerInputComponent->BindAction("Drop", IE_Released, this, &AShooterCharacter::DropWeapon);
+	PlayerInputComponent->BindAction("Drop", IE_Pressed, this, &AShooterCharacter::SelectButtonPressed);
+	PlayerInputComponent->BindAction("Drop", IE_Released, this, &AShooterCharacter::SelectButtonReleased);
 }
 
 float AShooterCharacter::GetCrosshairSpreadMultiplier() const

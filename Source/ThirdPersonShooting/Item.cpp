@@ -159,6 +159,8 @@ void AItem::SetItemProperties(EItemState State)
 		// Set properties for the box collider which we added by ourself;
 		CollisionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		// Hide the widget of the weapon;
+		PickupWidget->SetVisibility(false);
 		break;
 
 	case EItemState::EIS_PickedUp:
@@ -177,10 +179,7 @@ void AItem::SetItemProperties(EItemState State)
 		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		// Set properties for the box collider which we added by ourself;
 		CollisionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-		CollisionBox->SetCollisionResponseToChannel(
-			ECollisionChannel::ECC_Visibility,
-			ECollisionResponse::ECR_Block);
-		CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		break;
 
 	case EItemState::EIS_MAX:

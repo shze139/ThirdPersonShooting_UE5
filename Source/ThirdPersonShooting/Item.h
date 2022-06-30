@@ -62,7 +62,10 @@ protected:
 	// Sets the ActiveStars arry of bools based on rarity
 	void SetActiveStars();
 
-	// Sets properties of the item's components based on State
+	/*
+	* Set the item's properties based on the current item state 
+	* @param State: Pass in the current state of the item
+	*/
 	void SetItemProperties(EItemState State);
 
 public:	

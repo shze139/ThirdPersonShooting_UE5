@@ -93,6 +93,12 @@ protected:
 	// Drop current EquippedWeapon
 	void DropWeapon();
 
+	void SelectButtonPressed();
+	void SelectButtonReleased();
+
+	// Drops currently equiped weapon and equips TraceHitItem
+	void SwapWeapon(AWeapon* WeaponToSwape);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -239,6 +245,10 @@ private:
 	/** Set this in Blueprints for the default Weapon class */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AWeapon> DefaultWeaponClass;
+
+	/** The item currently hit by our trance in TranceForItems(Could be null) */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, Meta = (AllowPrivateAccess = "true"))
+	AItem* TraceHitItem;
 
 public:
 	/** return CameraBoom subobject */
