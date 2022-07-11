@@ -53,8 +53,10 @@ AShooterCharacter::AShooterCharacter() :
 	bFireButtonPressed(false),
 	bShouldFire(true),
 	// Item trace variable
-	bShouldTraceForItems(false)
-
+	bShouldTraceForItems(false),
+	//Item interp variable
+	CameraInterpDistance(250.f),
+	CameraInterpElevation(65.f)
 	// Constructor Body Begin
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -505,8 +507,7 @@ void AShooterCharacter::SelectButtonPressed()
 {
 	if (TraceHitItem)
 	{
-		auto TraceHitWeapon = Cast<AWeapon>(TraceHitItem);
-		if(TraceHitWeapon) SwapWeapon(TraceHitWeapon);
+		TraceHitItem->StartItemCurve(this);
 	}
 }
 
@@ -581,6 +582,24 @@ void AShooterCharacter::IncrementOverlappedItemCount(int8 Amount)
 	{
 		OverlappedItemCount += Amount;
 		bShouldTraceForItems = true;
+	}
+}
+
+FVector AShooterCharacter::GetCameraInterpLocation()
+{
+	const FVector CameraWorldLocation{ FollowCamera->GetComponentLocation() };
+	const FVector CameraForwardVector{ FollowCamera->GetForwardVector() };
+
+	return CameraWorldLocation + CameraForwardVector * CameraInterpDistance
+		+ FVector(0.f, 0.f, CameraInterpElevation);
+}
+
+void AShooterCharacter::GetPickupItem(AItem* Item)
+{
+	auto Weapon = Cast<AWeapon>(Item);
+	if (Weapon)
+	{
+		SwapWeapon(Weapon);
 	}
 }
 

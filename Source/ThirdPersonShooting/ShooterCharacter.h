@@ -247,8 +247,16 @@ private:
 	TSubclassOf<AWeapon> DefaultWeaponClass;
 
 	/** The item currently hit by our trance in TranceForItems(Could be null) */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	AItem* TraceHitItem;
+
+	/** Distance outward from the camera for the interp destination */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item, meta = (AllowPrivateAccess = "true"))
+	float CameraInterpDistance;
+
+	/** Distance upward from the camera for the interp destination */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item, meta = (AllowPrivateAccess = "true"))
+	float CameraInterpElevation;
 
 public:
 	/** return CameraBoom subobject */
@@ -266,4 +274,12 @@ public:
 
 	/** Adds/Subtracts to/from OverlappedItemCount and updates bShouldTraceForItem */
 	void IncrementOverlappedItemCount(int8 Amount);
+
+	FVector GetCameraInterpLocation();
+
+	/*
+	* Get the Item which is pointed by crosshair
+	* @param: Pass in an Item and cast it to current subclass;
+	*/
+	void GetPickupItem(AItem* Item);
 };

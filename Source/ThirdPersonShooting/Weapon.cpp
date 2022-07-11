@@ -32,9 +32,9 @@ void AWeapon::ThrowWeapon()
     // Direction in which we throw the weapon
     FVector ImpulseDirection = MeshRight.RotateAngleAxis(-20.f, MeshForward);
 
-    float RandomRotation{ 30.f };
+    float RandomRotation{ FMath::FRandRange(-30.f, 30.f) };
     ImpulseDirection = ImpulseDirection.RotateAngleAxis(RandomRotation, FVector(0.f, 0.f, 1.f));
-    ImpulseDirection *= 2'000.f;
+    ImpulseDirection *= 5'000.f;
     GetItemMesh()->AddImpulse(ImpulseDirection);
 
     bFalling = true;
